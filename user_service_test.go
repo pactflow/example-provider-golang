@@ -33,10 +33,10 @@ func TestPactProvider(t *testing.T) {
 		BrokerToken:                os.Getenv("PACT_BROKER_TOKEN"),
 		BrokerUsername:             os.Getenv("PACT_BROKER_USERNAME"),
 		BrokerPassword:             os.Getenv("PACT_BROKER_PASSWORD"),
-		PublishVerificationResults: true,
+		PublishVerificationResults: envBool("PACT_BROKER_PUBLISH_VERIFICATION_RESULTS"),
 		ProviderVersion:            os.Getenv("TRAVIS_COMMIT"),
 		StateHandlers:              stateHandlers,
-		EnablePending:              isPending(),
+		EnablePending:              envBool("PENDING"),
 	})
 
 	if err != nil {
@@ -96,8 +96,8 @@ func createPact() dsl.Pact {
 	}
 }
 
-func isPending() bool {
-	if os.Getenv("PENDING") != "" {
+func envBool(k string) bool {
+	if os.Getenv(k) != "" {
 		return true
 	}
 	return false

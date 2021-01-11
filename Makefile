@@ -29,7 +29,7 @@ fake_ci: .env
 	make ci
 
 ci_webhook: .env
-	go test -v .
+	go test -v -count=1 .
 
 fake_ci_webhook:
 	CI=true \
@@ -43,7 +43,7 @@ fake_ci_webhook:
 ## =====================
 
 test: .env
-	go test -v .
+	go test -v -count=1 .
 
 ## =====================
 ## Deploy tasks

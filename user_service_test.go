@@ -20,10 +20,7 @@ func TestPactProvider(t *testing.T) {
 	if os.Getenv("SELECTORS") != "" {
 		selectors = []types.ConsumerVersionSelector{
 			{
-				Tag: "master",
-			},
-			{
-				Tag: "prod",
+				Tag: os.Getenv("TRAVIS_BRANCH"),
 			},
 		}
 	}
@@ -37,7 +34,7 @@ func TestPactProvider(t *testing.T) {
 		BrokerUsername:             os.Getenv("PACT_BROKER_USERNAME"),
 		BrokerPassword:             os.Getenv("PACT_BROKER_PASSWORD"),
 		PublishVerificationResults: true,
-		ProviderVersion:            "1.0.0",
+		ProviderVersion:            os.Getenv("TRAVIS_COMMIT"),
 		StateHandlers:              stateHandlers,
 		EnablePending:              isPending(),
 	})

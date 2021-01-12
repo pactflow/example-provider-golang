@@ -16,20 +16,11 @@ func TestPactProvider(t *testing.T) {
 
 	pact := createPact()
 
-	selectors := make([]types.ConsumerVersionSelector, 0)
-	if os.Getenv("SELECTORS") != "" {
-		selectors = []types.ConsumerVersionSelector{
-			{
-				Tag: os.Getenv("TRAVIS_BRANCH"),
-			},
-		}
-	}
-
-	// Verify the Provider - Tag-based Published Pacts for any known consumers
+	// Verify the Provider - fetch pacts from Pactflow
 	_, err := pact.VerifyProvider(t, types.VerifyRequest{
 		ProviderBaseURL:            fmt.Sprintf("http://127.0.0.1:%d", port),
 		BrokerURL:                  fmt.Sprintf(os.Getenv("PACT_BROKER_BASE_URL")),
-		ConsumerVersionSelectors:   selectors,
+		ConsumerVersionSelectors:   getSelectors(),
 		BrokerToken:                os.Getenv("PACT_BROKER_TOKEN"),
 		BrokerUsername:             os.Getenv("PACT_BROKER_USERNAME"),
 		BrokerPassword:             os.Getenv("PACT_BROKER_PASSWORD"),
@@ -44,8 +35,6 @@ func TestPactProvider(t *testing.T) {
 	}
 }
 
-var token = "" // token will be dynamic based on state etc.
-
 // Provider state handlers
 var stateHandlers = types.StateHandlers{
 	"a product with ID 10 exists": func() error {
@@ -59,7 +48,6 @@ var stateHandlers = types.StateHandlers{
 }
 
 // Starts the provider API with hooks for provider states.
-// This essentially mirrors the main.go file, with extra routes added.
 func startProvider() {
 	router := gin.Default()
 	router.GET("/product/:id", GetProduct)
@@ -67,24 +55,25 @@ func startProvider() {
 	router.Run(fmt.Sprintf(":%d", port))
 }
 
-// Configuration / Test Data
-var dir, _ = os.Getwd()
-var pactDir = fmt.Sprintf("%s/../../pacts", dir)
-var logDir = fmt.Sprintf("%s/log", dir)
-var port, _ = utils.GetFreePort()
-
 // Provider States data sets
 var productExists = &ProductRepository{
 	Products: map[string]*Product{
 		"10": {
-			Name: "Pizza",
-			ID:   "10",
-			Type: "food",
+			Name:    "Pizza",
+			ID:      "10",
+			Type:    "food",
+			Version: "1.0.0",
 		},
 	},
 }
 
 var noProductsExist = &ProductRepository{}
+
+// Configuration / Test Data
+var dir, _ = os.Getwd()
+var pactDir = fmt.Sprintf("%s/../../pacts", dir)
+var logDir = fmt.Sprintf("%s/log", dir)
+var port, _ = utils.GetFreePort()
 
 // Setup the Pact client.
 func createPact() dsl.Pact {
@@ -94,6 +83,19 @@ func createPact() dsl.Pact {
 		PactDir:                  pactDir,
 		DisableToolValidityCheck: true,
 	}
+}
+
+func getSelectors() []types.ConsumerVersionSelector {
+	selectors := make([]types.ConsumerVersionSelector, 0)
+	if os.Getenv("SELECTORS") != "" {
+		selectors = []types.ConsumerVersionSelector{
+			{
+				Tag: os.Getenv("TRAVIS_BRANCH"),
+			},
+		}
+	}
+
+	return selectors
 }
 
 func envBool(k string) bool {

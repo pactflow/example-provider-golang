@@ -116,6 +116,6 @@ install:
 		echo "--- 🐿 Installing Pact CLI dependencies"; \
 		cd /tmp; \
 		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
-		export PATH=${PATH}:/tmp/pact/bin; \
+		export PATH=$PATH:/tmp/pact/bin; \
 		echo ${PATH}; \
   fi

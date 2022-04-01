@@ -114,7 +114,7 @@ test_pact_changed_webhook:
 install:
 	@if [ ! -d pact/bin ]; then\
 		@echo "--- 🐿 Installing Pact CLI dependencies"; \
-		cd opt/; \
+		cd /tmp/; \
 		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
-		export PATH=$PATH:/opt/pact/bin; \
+		export PATH=$PATH:/tmp/pact/bin; \
   fi

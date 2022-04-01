@@ -118,4 +118,5 @@ install:
 		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
 		echo "/tmp/pact/bin/" >> $GITHUB_PATH; \
 		echo ${PATH}; \
+		echo ${GITHUB_PATH}; \
   fi

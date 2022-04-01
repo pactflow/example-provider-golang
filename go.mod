@@ -4,5 +4,5 @@ go 1.15
 
 require (
 	github.com/gin-gonic/gin v1.6.3
-	github.com/pact-foundation/pact-go v1.5.1
+	github.com/pact-foundation/pact-go v1.6.9
 )

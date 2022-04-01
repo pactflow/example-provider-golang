@@ -92,7 +92,11 @@ func getSelectors() []types.ConsumerVersionSelector {
 		selectors = []types.ConsumerVersionSelector{
 			{
 				Tag: os.Getenv("GIT_BRANCH"),
+			},
+			{
 				Tag: "master",
+			},
+			{
 				Tag: "prod",
 			},
 		}

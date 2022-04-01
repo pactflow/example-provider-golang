@@ -117,5 +117,4 @@ install:
 		cd opt/; \
 		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
 		export PATH=$PATH:/opt/pact/bin; \
-		go get github.com/pact-foundation/pact-go@v1; \
   fi

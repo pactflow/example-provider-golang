@@ -17,13 +17,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-  - uses: actions/checkout@v3
-  - uses: actions/setup-go@v3
-    with:
-      go-version: '^1.14.x'
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.14.x'
       - name: Test
-        run: |
-        GIT_BRANCH=${GITHUB_REF:11} make test
+        run: GIT_BRANCH=${GITHUB_REF:11} make test
 
   # Runs on branches as well, so we know the status of our PRs
   can-i-deploy:

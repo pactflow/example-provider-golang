@@ -22,7 +22,7 @@ jobs:
         with:
           go-version: '^1.14.1'
       - name: install 
-        run: make install && go install
+        run: make install
       - name: Test
         run: GIT_BRANCH=${GITHUB_REF:11} make test
 

@@ -111,7 +111,7 @@ test_pact_changed_webhook:
 .env:
 	touch .env
 
-install:
+install_ruby_standalone:
 	@if [ ! -d pact/bin ]; then\
 		echo "--- 🐿 Installing Pact CLI dependencies"; \
 		cd /tmp; \

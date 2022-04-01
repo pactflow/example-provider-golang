@@ -21,8 +21,8 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: '^1.14.1'
-      - name: install 
-        run: make install
+      - name: install ruby standalone
+        run: make install_ruby_standalone
       - name: Test
         run: GIT_BRANCH=${GITHUB_REF:11} make test
 

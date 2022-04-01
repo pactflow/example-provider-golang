@@ -13,6 +13,14 @@ The project uses a Makefile to simulate a very simple build pipeline with two st
 
 It is using a public tenant on Pactflow, which you can access [here](https://test.pact.dius.com.au) using the credentials `dXfltyFMgNOFZAxr8io9wJ37iUpY42M`/`O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1`. The latest version of the Example Consumer/Example Provider pact is published [here](https://test.pact.dius.com.au/pacts/provider/pactflow-example-provider-golang/consumer/pactflow-example-consumer/latest).
 
+## Pre-Requisites
+
+Ruby standalone binaries must be installed, the following script will download them and add them to your system PATH
+
+```
+make install_ruby_standalone
+```
+
 ## Usage
 
 See the [Pactflow CI/CD Workshop](https://github.com/pactflow/ci-cd-workshop).

@@ -28,6 +28,7 @@ func TestPactProvider(t *testing.T) {
 		ProviderVersion:            os.Getenv("GIT_COMMIT"),
 		StateHandlers:              stateHandlers,
 		EnablePending:              envBool("PENDING"),
+		ProviderBranch:             os.Getenv("GIT_BRANCH"),
 	})
 
 	if err != nil {
@@ -91,6 +92,8 @@ func getSelectors() []types.ConsumerVersionSelector {
 		selectors = []types.ConsumerVersionSelector{
 			{
 				Tag: os.Getenv("GIT_BRANCH"),
+				Tag: "master",
+				Tag: "prod",
 			},
 		}
 	}

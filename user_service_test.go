@@ -25,7 +25,7 @@ func TestPactProvider(t *testing.T) {
 		BrokerUsername:             os.Getenv("PACT_BROKER_USERNAME"),
 		BrokerPassword:             os.Getenv("PACT_BROKER_PASSWORD"),
 		PublishVerificationResults: envBool("PACT_BROKER_PUBLISH_VERIFICATION_RESULTS"),
-		ProviderVersion:            os.Getenv("TRAVIS_COMMIT"),
+		ProviderVersion:            os.Getenv("GIT_COMMIT"),
 		StateHandlers:              stateHandlers,
 		EnablePending:              envBool("PENDING"),
 	})
@@ -90,7 +90,7 @@ func getSelectors() []types.ConsumerVersionSelector {
 	if os.Getenv("SELECTORS") != "" {
 		selectors = []types.ConsumerVersionSelector{
 			{
-				Tag: os.Getenv("TRAVIS_BRANCH"),
+				Tag: os.Getenv("GIT_BRANCH"),
 			},
 		}
 	}

@@ -41,7 +41,7 @@ fake_ci_webhook:
 ## Build/test tasks
 ## =====================
 
-test: .env install
+test: .env
 	go test -v -count=1 .
 
 ## =====================

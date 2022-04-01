@@ -41,7 +41,7 @@ fake_ci_webhook:
 ## Build/test tasks
 ## =====================
 
-test: .env install
+test: .env
 	go test -v -count=1 .
 
 ## =====================
@@ -116,5 +116,4 @@ install:
 		@echo "--- 🐿 Installing Pact CLI dependencies"; \
 		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
 		export PATH=$PATH:${PWD}/pact/bin; \
-		go get github.com/pact-foundation/pact-go@v1; \
   fi

@@ -41,7 +41,7 @@ fake_ci_webhook:
 ## Build/test tasks
 ## =====================
 
-test: .env
+test: .env install
 	go test -v -count=1 .
 
 ## =====================
@@ -110,3 +110,9 @@ test_pact_changed_webhook:
 
 .env:
 	touch .env
+
+install:
+	@if [ ! -d pact/bin ]; then\
+		@echo "--- 🐿 Installing Pact CLI dependencies"; \
+		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
+  fi

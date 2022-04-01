@@ -117,6 +117,6 @@ install:
 		cd /tmp; \
 		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
 		ls /tmp/pact/bin; \
-		export PATH=$PATH:/tmp/pact/bin/pact-provider-verifier; \
+		export PATH=${PATH}:/tmp/pact/bin/pact-provider-verifier; \
 		echo ${PATH}; \
   fi

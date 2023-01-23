@@ -16,7 +16,7 @@ func TestPactProvider(t *testing.T) {
 
 	pact := createPact()
 
-	// Verify the Provider - fetch pacts from Pactflow
+	// Verify the Provider - fetch pacts from PactFlow
 	_, err := pact.VerifyProvider(t, types.VerifyRequest{
 		ProviderBaseURL:            fmt.Sprintf("http://127.0.0.1:%d", port),
 		BrokerURL:                  fmt.Sprintf(os.Getenv("PACT_BROKER_BASE_URL")),

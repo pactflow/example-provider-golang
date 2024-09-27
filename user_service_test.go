@@ -42,7 +42,7 @@ func TestPactProvider(t *testing.T) {
 		// For builds triggered by a 'contract_requiring_verification_published' webhook, verify the changed pact against latest of mainBranch and any version currently deployed to an environment
 		// https://docs.pact.io/pact_broker/webhooks#using-webhooks-with-the-contract_requiring_verification_published-event
 		// The URL will have been passed in from the webhook to the CI job.
-		verifyRequest.PactFiles = []string{os.Getenv("PACT_URL")}
+		verifyRequest.PactURLs = []string{os.Getenv("PACT_URL")}
 	} else {
 		// For 'normal' provider builds, fetch the the latest version from the main branch of each consumer, as specified by
 		// the consumer's mainBranch property and all the currently deployed and currently released and supported versions of each consumer.

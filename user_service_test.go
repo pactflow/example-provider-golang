@@ -26,25 +26,39 @@ func TestPactProvider(t *testing.T) {
 	verifier := provider.NewVerifier()
 
 	// Verify the Provider - fetch pacts from PactFlow
-	err := verifier.VerifyProvider(t, provider.VerifyRequest{
+	verifyRequest := provider.VerifyRequest{
 		Provider:                   "pactflow-example-provider-golang",
 		ProviderBaseURL:            fmt.Sprintf("http://127.0.0.1:%d", port),
-		BrokerURL:                  fmt.Sprint(os.Getenv("PACT_BROKER_BASE_URL")),
-		ConsumerVersionSelectors:   getSelectors(),
 		BrokerToken:                os.Getenv("PACT_BROKER_TOKEN"),
 		BrokerUsername:             os.Getenv("PACT_BROKER_USERNAME"),
 		BrokerPassword:             os.Getenv("PACT_BROKER_PASSWORD"),
 		PublishVerificationResults: envBool("PACT_BROKER_PUBLISH_VERIFICATION_RESULTS"),
 		ProviderVersion:            os.Getenv("GIT_COMMIT"),
 		StateHandlers:              stateHandlers,
-		EnablePending:              true,
-		IncludeWIPPactsSince:       parseDate("2024-01-01"),
 		ProviderBranch:             os.Getenv("GIT_BRANCH"),
-	})
+	}
 
+	if os.Getenv("PACT_URL") != "" {
+		// For builds triggered by a 'contract_requiring_verification_published' webhook, verify the changed pact against latest of mainBranch and any version currently deployed to an environment
+		// https://docs.pact.io/pact_broker/webhooks#using-webhooks-with-the-contract_requiring_verification_published-event
+		// The URL will have been passed in from the webhook to the CI job.
+		verifyRequest.PactFiles = []string{os.Getenv("PACT_URL")}
+	} else {
+		// For 'normal' provider builds, fetch the the latest version from the main branch of each consumer, as specified by
+		// the consumer's mainBranch property and all the currently deployed and currently released and supported versions of each consumer.
+		// https://docs.pact.io/pact_broker/advanced_topics/consumer_version_selectors
+		verifyRequest.BrokerURL = fmt.Sprint(os.Getenv("PACT_BROKER_BASE_URL"))
+		verifyRequest.ConsumerVersionSelectors = getSelectors()
+		verifyRequest.EnablePending = true
+		verifyRequest.IncludeWIPPactsSince = parseDate("2024-01-01")
+	}
+
+	err := verifier.VerifyProvider(t, verifyRequest)
 	if err != nil {
 		t.Fatalf("%v", err)
 	}
+
+
 
 }
 

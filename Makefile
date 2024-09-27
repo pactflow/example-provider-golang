@@ -1,6 +1,11 @@
 PACTICIPANT := "pactflow-example-provider-golang"
 WEBHOOK_UUID := "c76b601e-d66a-4eb1-88a4-6ebc50c0df8b"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
+PACT_GO_VERSION=2.0.8
+PACT_DOWNLOAD_DIR=/tmp
+ifeq ($(OS),Windows_NT)
+	PACT_DOWNLOAD_DIR=$$TMP
+endif
 
 # Only deploy from master
 ifeq ($(GIT_BRANCH),master)
@@ -48,7 +53,7 @@ test: .env
 ## Deploy tasks
 ## =====================
 
-deploy: deploy_app tag record_deployment
+deploy: deploy_app record_deployment
 
 no_deploy:
 	@echo "Not deploying as not on master branch"
@@ -64,13 +69,6 @@ can_i_deploy: .env
 
 deploy_app:
 	@echo "Deploying to prod"
-
-tag: .env
-	@"${PACT_CLI}" broker create-version-tag \
-	  --pacticipant ${PACTICIPANT} \
-	  --version ${GIT_COMMIT} \
-		--auto-create-version \
-	  --tag ${GIT_BRANCH}
 
 record_deployment: .env
 	@"${PACT_CLI}" broker record-deployment --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment production
@@ -111,7 +109,11 @@ test_pact_changed_webhook:
 .env:
 	touch .env
 
-install_ruby_standalone:
+install:
+	go install github.com/pact-foundation/pact-go/v2@v$(PACT_GO_VERSION)
+	pact-go -l DEBUG install --libDir $(PACT_DOWNLOAD_DIR);
+
+install_cli:
 	@if [ ! -d pact/bin ]; then\
 		echo "--- 🐿 Installing Pact CLI dependencies"; \
 		cd /tmp; \

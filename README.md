@@ -15,10 +15,16 @@ It is using a public tenant on PactFlow, which you can access [here](https://tes
 
 ## Pre-Requisites
 
-Ruby standalone binaries must be installed, the following script will download them and add them to your system PATH
+In order to use pact-go v2, you must install pact ffi system libraries to your machine.
 
 ```
-make install_ruby_standalone
+make install
+```
+
+In order to use the pact cli tools, which interact with a pact broker, the Ruby standalone binaries must be installed, the following script will download them and add them to your system PATH
+
+```
+make install_cli
 ```
 
 ## Usage

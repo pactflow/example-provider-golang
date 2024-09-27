@@ -4,22 +4,32 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pact-foundation/pact-go/dsl"
-	"github.com/pact-foundation/pact-go/types"
-	"github.com/pact-foundation/pact-go/utils"
+	"github.com/pact-foundation/pact-go/v2/models"
+	"github.com/pact-foundation/pact-go/v2/provider"
+	"github.com/pact-foundation/pact-go/v2/utils"
 )
+
+func parseDate(dateStr string) *time.Time {
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		panic(err)
+	}
+	return &date
+}
 
 func TestPactProvider(t *testing.T) {
 	go startProvider()
 
-	pact := createPact()
+	verifier := provider.NewVerifier()
 
 	// Verify the Provider - fetch pacts from PactFlow
-	_, err := pact.VerifyProvider(t, types.VerifyRequest{
+	err := verifier.VerifyProvider(t, provider.VerifyRequest{
+		Provider:                   "pactflow-example-provider-golang",
 		ProviderBaseURL:            fmt.Sprintf("http://127.0.0.1:%d", port),
-		BrokerURL:                  fmt.Sprintf(os.Getenv("PACT_BROKER_BASE_URL")),
+		BrokerURL:                  fmt.Sprint(os.Getenv("PACT_BROKER_BASE_URL")),
 		ConsumerVersionSelectors:   getSelectors(),
 		BrokerToken:                os.Getenv("PACT_BROKER_TOKEN"),
 		BrokerUsername:             os.Getenv("PACT_BROKER_USERNAME"),
@@ -27,24 +37,26 @@ func TestPactProvider(t *testing.T) {
 		PublishVerificationResults: envBool("PACT_BROKER_PUBLISH_VERIFICATION_RESULTS"),
 		ProviderVersion:            os.Getenv("GIT_COMMIT"),
 		StateHandlers:              stateHandlers,
-		EnablePending:              envBool("PENDING"),
+		EnablePending:              true,
+		IncludeWIPPactsSince:       parseDate("2024-01-01"),
 		ProviderBranch:             os.Getenv("GIT_BRANCH"),
 	})
 
 	if err != nil {
 		t.Fatalf("%v", err)
 	}
+
 }
 
 // Provider state handlers
-var stateHandlers = types.StateHandlers{
-	"a product with ID 10 exists": func() error {
+var stateHandlers = models.StateHandlers{
+	"a product with ID 10 exists": func(setup bool, s models.ProviderState) (models.ProviderStateResponse, error) {
 		productRepository = productExists
-		return nil
+		return models.ProviderStateResponse{}, nil
 	},
-	"no products exist": func() error {
+	"no products exist": func(setup bool, s models.ProviderState) (models.ProviderStateResponse, error) {
 		productRepository = noProductsExist
-		return nil
+		return models.ProviderStateResponse{}, nil
 	},
 }
 
@@ -71,33 +83,17 @@ var productExists = &ProductRepository{
 var noProductsExist = &ProductRepository{}
 
 // Configuration / Test Data
-var dir, _ = os.Getwd()
-var pactDir = fmt.Sprintf("%s/../../pacts", dir)
-var logDir = fmt.Sprintf("%s/log", dir)
 var port, _ = utils.GetFreePort()
 
-// Setup the Pact client.
-func createPact() dsl.Pact {
-	return dsl.Pact{
-		Provider:                 "pactflow-example-provider-golang",
-		LogDir:                   logDir,
-		PactDir:                  pactDir,
-		DisableToolValidityCheck: true,
-	}
-}
-
-func getSelectors() []types.ConsumerVersionSelector {
-	selectors := make([]types.ConsumerVersionSelector, 0)
+func getSelectors() []provider.Selector {
+	selectors := make([]provider.Selector, 0)
 	if os.Getenv("SELECTORS") != "" {
-		selectors = []types.ConsumerVersionSelector{
-			{
-				Tag: os.Getenv("GIT_BRANCH"),
+		selectors = []provider.Selector{
+			&provider.ConsumerVersionSelector{
+				DeployedOrReleased: true,
 			},
-			{
-				Tag: "master",
-			},
-			{
-				Tag: "prod",
+			&provider.ConsumerVersionSelector{
+				MainBranch: true,
 			},
 		}
 	}
@@ -106,8 +102,5 @@ func getSelectors() []types.ConsumerVersionSelector {
 }
 
 func envBool(k string) bool {
-	if os.Getenv(k) != "" {
-		return true
-	}
-	return false
+	return os.Getenv(k) != ""
 }

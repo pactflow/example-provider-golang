@@ -38,7 +38,7 @@ jobs:
         with:
           go-version: '^1.22'
       - run: docker pull pactfoundation/pact-cli:latest
-      - name: Install
-        run: npm i
+      - name: install pact-go shared libraries
+        run: make install
       - name: ${{env.DESCRIPTION}}
         run: make ci_webhook

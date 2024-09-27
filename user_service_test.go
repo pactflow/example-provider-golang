@@ -4,12 +4,21 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pact-foundation/pact-go/dsl"
 	"github.com/pact-foundation/pact-go/types"
 	"github.com/pact-foundation/pact-go/utils"
 )
+
+func parseDate(dateStr string) *time.Time {
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		panic(err)
+	}
+	return &date
+}
 
 func TestPactProvider(t *testing.T) {
 	go startProvider()
@@ -27,13 +36,16 @@ func TestPactProvider(t *testing.T) {
 		PublishVerificationResults: envBool("PACT_BROKER_PUBLISH_VERIFICATION_RESULTS"),
 		ProviderVersion:            os.Getenv("GIT_COMMIT"),
 		StateHandlers:              stateHandlers,
-		EnablePending:              envBool("PENDING"),
+		EnablePending:              true,
+		IncludeWIPPactsSince: 		parseDate("2024-01-01"),
 		ProviderBranch:             os.Getenv("GIT_BRANCH"),
 	})
 
 	if err != nil {
 		t.Fatalf("%v", err)
 	}
+	
+
 }
 
 // Provider state handlers

@@ -28,7 +28,7 @@ func TestPactProvider(t *testing.T) {
 	// Verify the Provider - fetch pacts from PactFlow
 	verifyRequest := provider.VerifyRequest{
 		Provider:                   "pactflow-example-provider-golang",
-		ProviderBaseURL:            fmt.Sprintf("http://127.0.0.1:%d", port),
+		ProviderBaseURL:            fmt.Sprintf("http://127.0.0.1:%d/bar", port),
 		BrokerToken:                os.Getenv("PACT_BROKER_TOKEN"),
 		BrokerUsername:             os.Getenv("PACT_BROKER_USERNAME"),
 		BrokerPassword:             os.Getenv("PACT_BROKER_PASSWORD"),
@@ -58,8 +58,6 @@ func TestPactProvider(t *testing.T) {
 		t.Fatalf("%v", err)
 	}
 
-
-
 }
 
 // Provider state handlers
@@ -77,7 +75,7 @@ var stateHandlers = models.StateHandlers{
 // Starts the provider API with hooks for provider states.
 func startProvider() {
 	router := gin.Default()
-	router.GET("/product/:id", GetProduct)
+	router.GET("/bar/product/:id", GetProduct)
 
 	router.Run(fmt.Sprintf(":%d", port))
 }

@@ -56,6 +56,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-24.04-arm]
         go-version: ["1.22", "1.23"]
+        tags: [libpact_cgo,pact_go]
+        cgo: [0,1]
         variant: [debian]
         experimental: [false]
         include:
@@ -75,6 +77,9 @@ jobs:
             go-version: 1.23
             experimental: true
             os: ubuntu-24.04-arm
+        exclude:
+          - cgo: 0
+            tags: pact_go
     steps:
       - uses: actions/checkout@v4
 
@@ -83,3 +88,5 @@ jobs:
         env:
           GO_VERSION: ${{ matrix.go-version }}
           IMAGE_VARIANT: ${{ matrix.variant }}
+          TAGS: ${{ matrix.tags }}
+          CGO_ENABLED: ${{ matrix.cgo }}

@@ -3,9 +3,21 @@ GITHUB_REPO := "pactflow/example-provider-golang"
 CONTRACT_REQUIRING_VERIFICATION_PUBLISHED_WEBHOOK_UUID := "c76b601e-d66a-4eb1-88a4-6ebc50c0df8b"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
 PACT_GO_VERSION=2.2.0
-PACT_DOWNLOAD_DIR=/tmp
+export PACT_DOWNLOAD_DIR=/tmp
 ifeq ($(OS),Windows_NT)
 	PACT_DOWNLOAD_DIR=$$TMP
+endif
+
+# if cgo is disabled, we will attempt to use ebitengine/purego
+CGO_ENABLED?=1
+# you can set tags to pact_go or libpact_cgo. 
+TAGS?=pact_go
+
+# pact-go doesn't support cgo disabling, so lets just always enable it
+ifeq ($(CGO_ENABLED),0)
+	ifeq ($(TAGS),pact_go)
+		CGO_ENABLED=1
+	endif
 endif
 
 # Only deploy from master
@@ -47,8 +59,12 @@ fake_ci_webhook:
 ## Build/test tasks
 ## =====================
 
+ifdef TAGS
+TEST_TAGS := --tags $(TAGS)
+endif
+
 test: .env
-	go test -v -count=1 .
+	go test -v -count=1 . $(TEST_TAGS)
 
 ## =====================
 ## Deploy tasks
@@ -131,6 +147,7 @@ docker_build:
 
 docker_test: docker_build
 	docker run \
-		-e PACT_FILE=pact.json \
+		-e CGO_ENABLED=$(CGO_ENABLED) \
+		-e TAGS=$(TAGS) \
 		--rm \
 		pactflow/example-provider-golang-$(IMAGE_VARIANT)

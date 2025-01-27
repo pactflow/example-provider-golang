@@ -22,7 +22,11 @@ import (
 func test_provider(port int) int {
 	verifier := C.pactffi_verifier_new()
 	C.pactffi_verifier_set_provider_info(verifier, C.CString("pactflow-example-provider-golang"), C.CString("http"), C.CString("localhost"), C.ushort(port), C.CString("/"))
-	C.pactffi_verifier_add_file_source(verifier, C.CString(os.Getenv("PACT_FILE")))
+	pactFile := os.Getenv("PACT_FILE")
+	if pactFile == "" {
+		pactFile = "pact.json"
+	}
+	C.pactffi_verifier_add_file_source(verifier, C.CString(pactFile))
 
 	defer C.pactffi_verifier_shutdown(verifier)
 	result := C.pactffi_verifier_execute(verifier)
@@ -34,14 +38,12 @@ func test_provider(port int) int {
 	return int(result)
 }
 
-
 type interactionPart int
 
 const (
 	INTERACTION_PART_REQUEST interactionPart = iota
 	INTERACTION_PART_RESPONSE
 )
-
 
 func free(str *C.char) {
 	C.free(unsafe.Pointer(str))

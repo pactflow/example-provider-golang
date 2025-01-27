@@ -1,3 +1,6 @@
+//go:build pact_go
+// +build pact_go
+
 package main
 
 import (
@@ -5,20 +8,24 @@ import (
 	"os"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/pact-foundation/pact-go/v2/provider"
 	"github.com/pact-foundation/pact-go/v2/utils"
 )
 
 func TestPactGoProvider(t *testing.T) {
-	go startProvider()
+	var port, _ = utils.GetFreePort()
+	go startProvider(port)
 
 	verifier := provider.NewVerifier()
 	verifyRequest := provider.VerifyRequest{
 		Provider:        "pactflow-example-provider-golang",
 		ProviderBaseURL: fmt.Sprintf("http://127.0.0.1:%d", port),
 	}
-	verifyRequest.PactFiles = []string{os.Getenv("PACT_FILE")}
+	pactFile := os.Getenv("PACT_FILE")
+	if pactFile == "" {
+		pactFile = "pact.json"
+	}
+	verifyRequest.PactFiles = []string{pactFile}
 
 	err := verifier.VerifyProvider(t, verifyRequest)
 	if err != nil {
@@ -26,12 +33,3 @@ func TestPactGoProvider(t *testing.T) {
 	}
 
 }
-
-func startProvider() {
-	router := gin.Default()
-	router.GET("/product/:id", GetProduct)
-	router.Run(fmt.Sprintf(":%d", port))
-}
-
-// Configuration / Test Data
-var port, _ = utils.GetFreePort()

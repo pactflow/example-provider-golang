@@ -1,12 +1,17 @@
+//go:build libpact_cgo
+// +build libpact_cgo
+
 package main
 
 import (
 	"testing"
-	// "github.com/pact-foundation/pact-go/v2/provider"
+
+	"github.com/pact-foundation/pact-go/v2/utils"
 )
 
 func TestLibPactFfiProvider(t *testing.T) {
-	go startProvider()
+	var port, _ = utils.GetFreePort()
+	go startProvider(port)
 
 	var res = test_provider(port)
 	if res != 0 {
@@ -14,12 +19,3 @@ func TestLibPactFfiProvider(t *testing.T) {
 	}
 
 }
-
-// func startProvider() {
-// 	router := gin.Default()
-// 	router.GET("/product/:id", GetProduct)
-// 	router.Run(fmt.Sprintf(":%d", port))
-// }
-
-// Configuration / Test Data
-// var port, _ = utils.GetFreePort()

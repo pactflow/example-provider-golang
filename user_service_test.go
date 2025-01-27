@@ -38,7 +38,10 @@ func TestPactProvider(t *testing.T) {
 		ProviderBranch:             os.Getenv("GIT_BRANCH"),
 	}
 
-	if os.Getenv("PACT_URL") != "" {
+	if os.Getenv("PACT_FILE") != "" {
+		// Allow user to pass a local file for verification
+		verifyRequest.PactFiles = []string{os.Getenv("PACT_FILE")}
+	} else if os.Getenv("PACT_URL") != "" {
 		// For builds triggered by a 'contract_requiring_verification_published' webhook, verify the changed pact against latest of mainBranch and any version currently deployed to an environment
 		// https://docs.pact.io/pact_broker/webhooks#using-webhooks-with-the-contract_requiring_verification_published-event
 		// The URL will have been passed in from the webhook to the CI job.
@@ -57,8 +60,6 @@ func TestPactProvider(t *testing.T) {
 	if err != nil {
 		t.Fatalf("%v", err)
 	}
-
-
 
 }
 

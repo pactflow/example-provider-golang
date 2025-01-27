@@ -2,7 +2,7 @@ PACTICIPANT := "pactflow-example-provider-golang"
 GITHUB_REPO := "pactflow/example-provider-golang"
 CONTRACT_REQUIRING_VERIFICATION_PUBLISHED_WEBHOOK_UUID := "c76b601e-d66a-4eb1-88a4-6ebc50c0df8b"
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
-PACT_GO_VERSION=2.0.8
+PACT_GO_VERSION=2.2.0
 PACT_DOWNLOAD_DIR=/tmp
 ifeq ($(OS),Windows_NT)
 	PACT_DOWNLOAD_DIR=$$TMP

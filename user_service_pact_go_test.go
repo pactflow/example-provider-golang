@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"os"
 	"testing"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pact-foundation/pact-go/v2/provider"
 	"github.com/pact-foundation/pact-go/v2/utils"
 )
 
-func TestPactProvider(t *testing.T) {
+func TestPactGoProvider(t *testing.T) {
 	go startProvider()
 
 	verifier := provider.NewVerifier()
@@ -31,7 +32,6 @@ func startProvider() {
 	router.GET("/product/:id", GetProduct)
 	router.Run(fmt.Sprintf(":%d", port))
 }
-
 
 // Configuration / Test Data
 var port, _ = utils.GetFreePort()

@@ -2,7 +2,7 @@ module github.com/pactflow/example-provider-golang
 
 go 1.23
 
-toolchain go1.25.0
+toolchain go1.25.1
 
 require (
 	github.com/gin-gonic/gin v1.10.1

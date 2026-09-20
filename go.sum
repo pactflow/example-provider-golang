@@ -122,6 +122,8 @@ github.com/pact-foundation/pact-go/v2 v2.7.0 h1:2WSM+TpjsSqHD4YbSRIoMZRg5pA3SOWZ
 github.com/pact-foundation/pact-go/v2 v2.7.0/go.mod h1:luXsS0lGNgcBh8FEfRiem5bLRh2vtHrYlazQxL7WXm0=
 github.com/pact-foundation/pact-go/v2 v2.7.1 h1:kvpGYA6tw1G7bOieA2VJOB1osAnoLpaUd1cq2a5wrBM=
 github.com/pact-foundation/pact-go/v2 v2.7.1/go.mod h1:7i11o/2afk/YJGdoLjj9WTYlPag1MbUvt4M7k/jAuy4=
+github.com/pact-foundation/pact-go/v2 v2.8.0 h1:jWryuEvHX/8c9a/8q/Vg9BeTW3Kv7jB7/NBWauduXEA=
+github.com/pact-foundation/pact-go/v2 v2.8.0/go.mod h1:/dRCTGZnPDNsPmITsvlAfb4PxikE7d6wJMPE8dSZCmU=
 github.com/pelletier/go-toml/v2 v2.2.2 h1:aYUidT7k73Pcl9nb2gScu7NSrKCSHIDE89b3+6Wq+LM=
 github.com/pelletier/go-toml/v2 v2.2.2/go.mod h1:1t835xjRzz80PqgE6HHgN2JOsmgYu/h4qDAS4n929Rs=
 github.com/pelletier/go-toml/v2 v2.2.4 h1:mye9XuhQ6gvn5h28+VilKrrPoQVanw5PMw/TB0t5Ec4=

@@ -6,7 +6,7 @@ toolchain go1.27.1
 
 require (
 	github.com/gin-gonic/gin v1.12.0
-	github.com/pact-foundation/pact-go/v2 v2.7.1
+	github.com/pact-foundation/pact-go/v2 v2.8.0
 )
 
 require (
